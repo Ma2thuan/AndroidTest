@@ -1,0 +1,106 @@
+package com.lecongthuan.anothertest;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.lecongthuan.anothertest.databinding.ActivityMain2Binding;
+
+import java.util.Random;
+
+public class MainActivity2 extends AppCompatActivity {
+    // 3 TEXT VIEW
+
+    ActivityMain2Binding binding;
+
+    Random random = new Random();
+    Handler handler = new Handler();
+    int flag = 0 , randNumber;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityMain2Binding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        addEvent();
+    }
+
+
+    Runnable foregrounndThread = new Runnable() {
+        @Override
+        public void run() {
+            LinearLayout.LayoutParams editParam = new LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1
+
+            );
+
+            editParam.setMargins(15,15,15,15);
+
+            LinearLayout linearLayout = new LinearLayout(MainActivity2.this);
+            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+
+            for (int i = 0; i < 3; i++) {
+                TextView textView = new TextView(MainActivity2.this);
+                textView.setLayoutParams(editParam);
+                textView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+                int randomNumber = random.nextInt(9);
+                if (randomNumber % 2 == 0)
+                    textView.setBackgroundColor(Color.BLUE);
+                else
+                    textView.setBackgroundColor(Color.GRAY);
+
+                textView.setText(String.valueOf(randomNumber));
+                linearLayout.addView(textView);
+            }
+
+            binding.lvItem.addView(linearLayout);
+        }
+    };
+
+    private void addEvent() {
+        binding.btnDraw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.lvItem.removeAllViews();
+                backgroundTask();
+            }
+        });
+    }
+
+    private void backgroundTask() {
+
+        int numberOfView = Integer.parseInt(binding.edtNumber.getText().toString());
+
+        Thread backgroundThread =  new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                for (int i = 1; i <= numberOfView; i++) {
+
+                    randNumber = random.nextInt(9);
+
+                    handler.post(foregrounndThread);
+
+                    SystemClock.sleep(100);
+
+                }
+
+            }
+        });
+        backgroundThread.start(); // BAT BUOC PHAI NAM CUOI
+    }
+}

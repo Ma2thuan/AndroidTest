@@ -1,0 +1,80 @@
+package com.lecongthuan.anothertest.adapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.lecongthuan.anothertest.Cau2;
+import com.lecongthuan.anothertest.Class.Product;
+import com.lecongthuan.anothertest.R;
+
+import java.util.List;
+
+public class ProductAdapter extends BaseAdapter {
+
+    Cau2 context;
+    int item_layout;
+    List<Product> products;
+
+    public ProductAdapter(Context context, int itemLayout, List<Product> products) {
+        this.context =(Cau2) context;
+        this.item_layout = itemLayout;
+        this.products = products;
+    }
+
+    @Override
+    public int getCount() {
+        return products.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return products.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+
+
+        if (convertView == null){
+            holder = new ViewHolder();
+            LayoutInflater inflater =(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            //tao layout
+            convertView = inflater.inflate(item_layout, null);
+
+            holder.txtId = convertView.findViewById(R.id.productId);
+            holder.txtName = convertView.findViewById(R.id.productName);
+            holder.txtPrice = convertView.findViewById(R.id.productPrice);
+
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        // binding
+        Product a = products.get(position);
+
+        holder.txtId.setText(String.format(" %s "  , a.getProductCode()));
+        holder.txtName.setText(String.format(" %s "  , a.getProductName()));
+        holder.txtPrice.setText(String.format(" %s "  , String.format("%.0f đ", a.getProductPrice())));
+
+        return  convertView;
+    };
+
+    public static class ViewHolder {
+        TextView txtId , txtName , txtPrice;
+    }
+}
